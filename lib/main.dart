@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-
+import 'package:http/http.dart'as http; //ตั้งชื่อเล่นโดย as เพื่อเอาไปใช้
+import 'ExchangeRate.dart';
 void main() {
   runApp(Myapp());
 }
@@ -27,32 +28,25 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int number = 0; //การสร้าง state
+  ExchangeRate? _dataFromAPI ;
+  @override
+  void initState() {
+    getExchangeRate();
+    super.initState();
+  }
+  Future<void> getExchangeRate() async{
+    var url = Uri.parse("https://api.exchangerate-api.com/v4/latest/USD");
+    var response= await http.get(url);
+    _dataFromAPI = ExchangeRate.fromJson(response.body);
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       //มี 2 ส่วน
       //สำเร็จรูปมาช่วยจัด
-      appBar: AppBar(
-        title: Text("โปรแกรมนับเลข"),
-      ),
-      body: Center(
-          child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text("กดปุ่มเพื่อเพิ่มจำนวนตัวเลข"), //widget ตัวแรก
-          Text(number.toString(), style: TextStyle(fontSize: 60)), //2
-        ],
-      ) //ระบุผ่าน child เมื่ออยากให้อะไรอยู่ด้านใน
-          ), //ส่วนสีขาว
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          setState(() {
-            number++;
-          });
-        },
-        child: Icon(Icons.add),
-      ),
-    );
+        appBar: AppBar(
+          title: Text("อัตราการแลกเปลี่ยนของสกุลเงิน"),
+        ),
+        body: Column(children: [],));
   }
 }
